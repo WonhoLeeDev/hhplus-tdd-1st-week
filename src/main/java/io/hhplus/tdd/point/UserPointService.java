@@ -26,4 +26,20 @@ public class UserPointService {
     public UserPoint selectById(Long id) throws InterruptedException {
         return userPointTable.selectById(id);
     }
+
+    public UserPoint useUserPoint(Long id, Long amount) throws InterruptedException {
+        if (id == null || amount == null) {
+            throw new IllegalArgumentException("ID 또는 포인트가 null 입니다.");
+        }
+        if (amount <= 0) {
+            throw new IllegalArgumentException("사용할 포인트는 1 이상이어야 합니다.");
+        }
+        if (userPointTable.selectById(id).point() < amount) {
+            throw new IllegalArgumentException("잔액이 부족합니다.");
+        }
+        if (userPointTable.selectById(id).point() >= amount) {
+            amount = userPointTable.selectById(id).point() - amount;
+        }
+        return userPointTable.insertOrUpdate(id, amount);
+    }
 }
