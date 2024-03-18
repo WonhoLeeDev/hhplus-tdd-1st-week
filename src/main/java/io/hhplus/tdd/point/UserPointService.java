@@ -10,7 +10,7 @@ public class UserPointService {
 
     private final UserPointTable userPointTable;
 
-    public UserPoint chargeUserPoint(Long id, Long amount) throws InterruptedException {
+    public UserPoint chargeUserPoint(Long id, Long amount) {
         if (id == null || amount == null) {
             throw new IllegalArgumentException("ID 또는 포인트가 null 입니다.");
         }
@@ -23,11 +23,11 @@ public class UserPointService {
         return userPointTable.insertOrUpdate(id, amount);
     }
 
-    public UserPoint selectById(Long id) throws InterruptedException {
+    public UserPoint selectById(Long id){
         return userPointTable.selectById(id);
     }
 
-    public UserPoint useUserPoint(Long id, Long amount) throws InterruptedException {
+    public UserPoint useUserPoint(Long id, Long amount) {
         if (id == null || amount == null) {
             throw new IllegalArgumentException("ID 또는 포인트가 null 입니다.");
         }

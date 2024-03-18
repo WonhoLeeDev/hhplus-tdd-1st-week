@@ -11,7 +11,7 @@ public class PointHistoryService {
 
     private final PointHistoryTable pointHistoryTable;
 
-    public PointHistory insert(Long userId, Long point, TransactionType transactionType, Long updateMillis) throws InterruptedException {
+    public PointHistory insert(Long userId, Long point, TransactionType transactionType, Long updateMillis) {
         if (transactionType == null) {
             throw new IllegalArgumentException("TransactionType 값이 null 입니다.");
         }
