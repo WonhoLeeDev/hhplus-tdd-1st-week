@@ -17,6 +17,7 @@ public class UserPointService {
         if (amount <= 0) {
             throw new IllegalArgumentException("충전할 포인트는 0 이상이어야 합니다.");
         }
+
         return userPointTable.insertOrUpdate(id, amount);
     }
 
