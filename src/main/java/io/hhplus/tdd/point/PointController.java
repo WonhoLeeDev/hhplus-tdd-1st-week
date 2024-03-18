@@ -1,21 +1,28 @@
 package io.hhplus.tdd.point;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collections;
 import java.util.List;
 
 @Slf4j
+@RequiredArgsConstructor
 @RequestMapping("/point")
 @RestController
 public class PointController {
+
+    private final PointService pointService;
+    private final PointHistoryService pointHistoryService;
+    private final UserPointService userPointService;
+
     /**
      * TODO - 특정 유저의 포인트를 조회하는 기능을 작성해주세요.
      */
     @GetMapping("{id}")
     public UserPoint point(@PathVariable Long id) {
-        return new UserPoint(0L, 0L, 0L);
+        log.info("point id={}", id);
+        return userPointService.selectById(id);
     }
 
     /**
@@ -23,7 +30,8 @@ public class PointController {
      */
     @GetMapping("{id}/histories")
     public List<PointHistory> history(@PathVariable Long id) {
-        return Collections.emptyList();
+        log.info("history id={}", id);
+        return pointHistoryService.selectAllByUserId(id);
     }
 
     /**
@@ -31,7 +39,8 @@ public class PointController {
      */
     @PatchMapping("{id}/charge")
     public UserPoint charge(@PathVariable Long id, @RequestBody Long amount) {
-        return new UserPoint(0L, 0L, 0L);
+        log.info("charge id={}, amount={}", id, amount);
+        return pointService.charge(new UserPoint(id, amount, System.currentTimeMillis()));
     }
 
     /**
@@ -39,6 +48,7 @@ public class PointController {
      */
     @PatchMapping("{id}/use")
     public UserPoint use(@PathVariable Long id, @RequestBody Long amount) {
-        return new UserPoint(0L, 0L, 0L);
+        log.info("use id={}, amount={}", id, amount);
+        return pointService.use(new UserPoint(id, amount, System.currentTimeMillis()));
     }
 }
