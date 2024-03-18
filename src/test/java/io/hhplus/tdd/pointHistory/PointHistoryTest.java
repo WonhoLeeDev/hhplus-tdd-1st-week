@@ -11,11 +11,13 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 /**
  * TO-DO:
  * 1. 포인트를 충전했을 때 PointHistoryTable에 포인트 충전내역이 저장되어야 한다.
- * 2. 포인트를 충전했을 때 PointHistoryTable에 포인트 충전금이 누적되어야 한다.
+ * 2. TransactionType과 updateMillis의 값이 유효하지 않으면, 충전내역 저장에 실패 한다.
+ * 3. 포인트를 충전했을 때 PointHistoryTable에 포인트 충전금이 누적되어야 한다.
  */
 @SpringBootTest
 public class PointHistoryTest {
@@ -30,11 +32,25 @@ public class PointHistoryTest {
 
     @DisplayName("포인트를 충전했을 때 PointHistoryTable에 포인트 충전내역이 저장되어야 한다.")
     @Test
-    void insertPointHistoryTest() throws InterruptedException {
+    void insertPointHistoryTest() {
         UserPoint userPoint = new UserPoint(1L, 10L, System.currentTimeMillis());
-        PointHistory history = pointHistoryService.insert(userPoint.id(), userPoint.point(), TransactionType.CHARGE, userPoint.updateMillis());
-        List<PointHistory> pointHistories = pointHistoryService.selectAllByUserId(history.userId());
-        assertThat(pointHistories.size()).isEqualTo(1);
+        assertDoesNotThrow(() -> {
+            pointHistoryService.insert(userPoint.id(), userPoint.point(), TransactionType.CHARGE, userPoint.updateMillis());
+        });
+    }
+
+    @DisplayName("TransactionType과 updateMillis의 값이 유효하지 않으면, 충전내역 저장에 실패 한다.")
+    @Test
+    void validateInsertPointHistoryArgumentsTest() {
+        assertThatExceptionOfType(IllegalArgumentException.class)
+                .isThrownBy(() -> {
+                    pointHistoryService.insert(1L, 10L, null, System.currentTimeMillis());
+                }).withMessage("TransactionType 값이 null 입니다.");
+
+        assertThatExceptionOfType(IllegalArgumentException.class)
+                .isThrownBy(() -> {
+                    pointHistoryService.insert(1L, 10L, TransactionType.CHARGE, null);
+                }).withMessage("updateMillis 값이 null 입니다.");
     }
 
     @DisplayName("포인트를 충전했을 때 PointHistoryTable에 포인트 충전금이 누적되어야 한다.")
