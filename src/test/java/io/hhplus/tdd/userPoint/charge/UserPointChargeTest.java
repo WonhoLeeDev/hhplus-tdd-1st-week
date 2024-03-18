@@ -1,8 +1,10 @@
 package io.hhplus.tdd.userPoint.charge;
 
+import io.hhplus.tdd.database.UserPointTable;
 import io.hhplus.tdd.point.UserPoint;
 import io.hhplus.tdd.point.UserPointService;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +24,11 @@ public class UserPointChargeTest {
 
     @Autowired
     UserPointService userPointService;
+
+    @BeforeEach
+    void setUp() {
+        userPointService = new UserPointService(new UserPointTable());
+    }
 
     @DisplayName("유효한 ID와 충전 금액을 전달했을 때 포인트가 정상적으로 충전되어야 한다.")
     @Test
