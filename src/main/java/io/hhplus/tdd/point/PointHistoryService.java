@@ -11,17 +11,14 @@ public class PointHistoryService {
 
     private final PointHistoryTable pointHistoryTable;
 
-    public PointHistory insert(Long userId, Long point, TransactionType transactionType, Long updateMillis) {
+    public PointHistory savePointHistory(long userId, long point, TransactionType transactionType, long updateMillis) {
         if (transactionType == null) {
             throw new IllegalArgumentException("TransactionType 값이 null 입니다.");
-        }
-        if (updateMillis == null) {
-            throw new IllegalArgumentException("updateMillis 값이 null 입니다.");
         }
         return pointHistoryTable.insert(userId, point, transactionType, updateMillis);
     }
 
-    public List<PointHistory> selectAllByUserId(Long userId) {
+    public List<PointHistory> getPointHistoriesByUserId(long userId) {
         return pointHistoryTable.selectAllByUserId(userId);
     }
 }

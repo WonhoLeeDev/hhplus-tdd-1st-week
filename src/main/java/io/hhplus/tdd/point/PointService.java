@@ -11,14 +11,14 @@ public class PointService {
     private final PointHistoryService pointHistoryService;
 
     public UserPoint charge(UserPoint userPoint) {
-        UserPoint chargedUserPoint = userPointService.chargeUserPoint(userPoint.id(), userPoint.point());
+        UserPoint chargedUserPoint = userPointService.chargePoint(userPoint.id(), userPoint.point());
         pointHistoryService.insert(chargedUserPoint.id(), chargedUserPoint.point(), TransactionType.CHARGE, chargedUserPoint.updateMillis());
         return chargedUserPoint;
     }
 
 
     public UserPoint use(UserPoint userPoint) {
-        UserPoint usedUserPoint = userPointService.useUserPoint(userPoint.id(), userPoint.point());
+        UserPoint usedUserPoint = userPointService.usePoint(userPoint.id(), userPoint.point());
         pointHistoryService.insert(usedUserPoint.id(), usedUserPoint.point(), TransactionType.USE, usedUserPoint.updateMillis());
         return usedUserPoint;
     }
