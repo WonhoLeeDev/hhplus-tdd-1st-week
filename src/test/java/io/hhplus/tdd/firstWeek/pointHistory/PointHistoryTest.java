@@ -35,7 +35,7 @@ public class PointHistoryTest {
     void insertPointHistoryTest() {
         UserPoint userPoint = new UserPoint(1L, 10L, System.currentTimeMillis());
         assertDoesNotThrow(() -> {
-            pointHistoryService.insert(userPoint.id(), userPoint.point(), TransactionType.CHARGE, userPoint.updateMillis());
+            pointHistoryService.savePointHistory(userPoint.id(), userPoint.point(), TransactionType.CHARGE, userPoint.updateMillis());
         });
     }
 
@@ -44,7 +44,7 @@ public class PointHistoryTest {
     void validateInsertPointHistoryArgumentsTest() {
         assertThatExceptionOfType(IllegalArgumentException.class)
                 .isThrownBy(() -> {
-                    pointHistoryService.insert(1L, 10L, null, System.currentTimeMillis());
+                    pointHistoryService.savePointHistory(1L, 10L, null, System.currentTimeMillis());
                 }).withMessage("TransactionType 값이 null 입니다.");
 
 //        assertThatExceptionOfType(IllegalArgumentException.class)
@@ -55,7 +55,7 @@ public class PointHistoryTest {
 
     @DisplayName("포인트를 충전했을 때 PointHistoryTable에 포인트 충전금이 누적되어야 한다.")
     @Test
-    void insertPointHistorySumTest() throws InterruptedException {
+    void insertPointHistorySumTest() {
         Long userId = 1L;
         Long insertPoint1 = 10L;
         Long insertPoint2 = 20L;
