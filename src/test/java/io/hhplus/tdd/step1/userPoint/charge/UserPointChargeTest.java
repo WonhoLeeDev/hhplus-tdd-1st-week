@@ -2,7 +2,7 @@ package io.hhplus.tdd.step1.userPoint.charge;
 
 import io.hhplus.tdd.database.UserPointTable;
 import io.hhplus.tdd.point.UserPoint;
-import io.hhplus.tdd.point.service.UserPointService;
+import io.hhplus.tdd.point.service.UserPointServiceImpl;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -23,18 +23,18 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 public class UserPointChargeTest {
 
     @Autowired
-    UserPointService userPointService;
+    UserPointServiceImpl userPointServiceImpl;
 
     @BeforeEach
     void setUp() {
-        userPointService = new UserPointService(new UserPointTable());
+        userPointServiceImpl = new UserPointServiceImpl(new UserPointTable());
     }
 
     @DisplayName("유효한 ID와 충전 금액을 전달했을 때 포인트가 정상적으로 충전되어야 한다.")
     @Test
     void chargePointTest() {
         UserPoint userPoint = new UserPoint(1L, 10L, System.currentTimeMillis());
-        UserPoint chargedUserPoint = userPointService.chargePoint(userPoint.id(), userPoint.point());
+        UserPoint chargedUserPoint = userPointServiceImpl.chargeUserPoint(userPoint.id(), userPoint.point());
         Assertions.assertThat(chargedUserPoint.point()).isEqualTo(userPoint.point());
     }
 
@@ -43,12 +43,12 @@ public class UserPointChargeTest {
     void updateUserPointTest() {
         Long userId = 1L;
         UserPoint userPoint1 = new UserPoint(userId, 10L, System.currentTimeMillis());
-        userPointService.chargePoint(userPoint1.id(), userPoint1.point());
+        userPointServiceImpl.chargeUserPoint(userPoint1.id(), userPoint1.point());
 
         UserPoint userPoint2 = new UserPoint(userId, 20L, System.currentTimeMillis());
-        userPointService.chargePoint(userPoint2.id(), userPoint2.point());
+        userPointServiceImpl.chargeUserPoint(userPoint2.id(), userPoint2.point());
 
-        UserPoint selectedUserPoint = userPointService.getPointById(userId);
+        UserPoint selectedUserPoint = userPointServiceImpl.getUserPointById(userId);
         Assertions.assertThat(selectedUserPoint.point()).isEqualTo(30L);
     }
 
@@ -66,7 +66,7 @@ public class UserPointChargeTest {
     void validateInsertUserPointNegativePointArgument() {
         assertThatExceptionOfType(IllegalArgumentException.class)
                 .isThrownBy(() -> {
-                    userPointService.chargePoint(1L, -10L);
+                    userPointServiceImpl.chargeUserPoint(1L, -10L);
                 });
     }
 }

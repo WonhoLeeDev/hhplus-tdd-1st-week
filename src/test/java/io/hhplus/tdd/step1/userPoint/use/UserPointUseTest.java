@@ -2,7 +2,7 @@ package io.hhplus.tdd.step1.userPoint.use;
 
 import io.hhplus.tdd.database.UserPointTable;
 import io.hhplus.tdd.point.UserPoint;
-import io.hhplus.tdd.point.service.UserPointService;
+import io.hhplus.tdd.point.service.UserPointServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -25,11 +25,11 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 public class UserPointUseTest {
 
     @Autowired
-    UserPointService userPointService;
+    UserPointServiceImpl userPointServiceImpl;
 
     @BeforeEach
     void setUp() {
-        userPointService = new UserPointService(new UserPointTable());
+        userPointServiceImpl = new UserPointServiceImpl(new UserPointTable());
     }
 
     @DisplayName("유효한 ID와 사용 금액을 전달했을 때, 충분한 잔액이 있으면 포인트가 정상적으로 사용 되어야 한다.")
@@ -37,7 +37,7 @@ public class UserPointUseTest {
     void usePointTest() {
         UserPoint userPoint = new UserPoint(1L, 50L, System.currentTimeMillis());
         assertDoesNotThrow(() -> {
-            userPointService.chargePoint(userPoint.id(), userPoint.point());
+            userPointServiceImpl.chargeUserPoint(userPoint.id(), userPoint.point());
         });
     }
 
@@ -46,10 +46,10 @@ public class UserPointUseTest {
     void usePointUpdateTest() {
         Long chargePoint = 50L;
         UserPoint userPoint = new UserPoint(1L, chargePoint, System.currentTimeMillis());
-        UserPoint chargedUserPoint = userPointService.chargePoint(userPoint.id(), userPoint.point());
+        UserPoint chargedUserPoint = userPointServiceImpl.chargeUserPoint(userPoint.id(), userPoint.point());
 
         Long usePoint = 30L;
-        UserPoint usedUserPoint = userPointService.usePoint(chargedUserPoint.id(), usePoint);
+        UserPoint usedUserPoint = userPointServiceImpl.useUserPoint(chargedUserPoint.id(), usePoint);
         assertThat(usedUserPoint.point()).isEqualTo(chargePoint - usePoint);
     }
 
@@ -66,16 +66,16 @@ public class UserPointUseTest {
     @Test
     void validateusePointNegativePointArgument() {
         UserPoint userPoint = new UserPoint(1L, 50L, System.currentTimeMillis());
-        UserPoint chargedUserPoint = userPointService.chargePoint(userPoint.id(), userPoint.point());
+        UserPoint chargedUserPoint = userPointServiceImpl.chargeUserPoint(userPoint.id(), userPoint.point());
 
         assertThatExceptionOfType(IllegalArgumentException.class)
                 .isThrownBy(() -> {
-                    userPointService.usePoint(chargedUserPoint.id(), -50L);
+                    userPointServiceImpl.useUserPoint(chargedUserPoint.id(), -50L);
                 }).withMessage("사용할 포인트는 1 이상이어야 합니다.");
 
         assertThatExceptionOfType(IllegalArgumentException.class)
                 .isThrownBy(() -> {
-                    userPointService.usePoint(chargedUserPoint.id(), 0L);
+                    userPointServiceImpl.useUserPoint(chargedUserPoint.id(), 0L);
                 }).withMessage("사용할 포인트는 1 이상이어야 합니다.");
     }
 
@@ -83,12 +83,12 @@ public class UserPointUseTest {
     @Test
     void validateusePointAmountArgument() {
         UserPoint userPoint = new UserPoint(1L, 50L, System.currentTimeMillis());
-        UserPoint chargedUserPoint = userPointService.chargePoint(userPoint.id(), userPoint.point());
+        UserPoint chargedUserPoint = userPointServiceImpl.chargeUserPoint(userPoint.id(), userPoint.point());
 
         Long usePoint = 51L;
         assertThatExceptionOfType(IllegalArgumentException.class)
                 .isThrownBy(() -> {
-                    userPointService.usePoint(chargedUserPoint.id(), usePoint);
+                    userPointServiceImpl.useUserPoint(chargedUserPoint.id(), usePoint);
                 }).withMessage("잔액이 부족합니다.");
     }
 
