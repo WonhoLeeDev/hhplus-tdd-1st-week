@@ -1,8 +1,8 @@
-package io.hhplus.tdd.firstWeek.userPoint.use;
+package io.hhplus.tdd.step1.userPoint.use;
 
 import io.hhplus.tdd.database.UserPointTable;
 import io.hhplus.tdd.point.UserPoint;
-import io.hhplus.tdd.point.UserPointService;
+import io.hhplus.tdd.point.service.UserPointService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

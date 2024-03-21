@@ -1,6 +1,8 @@
-package io.hhplus.tdd.point;
+package io.hhplus.tdd.point.service;
 
 import io.hhplus.tdd.database.UserPointTable;
+import io.hhplus.tdd.point.TransactionType;
+import io.hhplus.tdd.point.UserPoint;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -14,9 +16,7 @@ public class UserPointService {
         if (amount <= 0) {
             throw new IllegalArgumentException("충전할 포인트는 0 이상이어야 합니다.");
         }
-        if(userPointTable.selectById(id).point() > 0L) {
-            amount += userPointTable.selectById(id).point();
-        }
+        amount = getAmountResult(id, amount, TransactionType.CHARGE);
         return userPointTable.insertOrUpdate(id, amount);
     }
 
@@ -31,9 +31,12 @@ public class UserPointService {
         if (userPointTable.selectById(id).point() < amount) {
             throw new IllegalArgumentException("잔액이 부족합니다.");
         }
-        if (userPointTable.selectById(id).point() >= amount) {
-            amount = userPointTable.selectById(id).point() - amount;
-        }
+        amount = getAmountResult(id, amount, TransactionType.USE);
         return userPointTable.insertOrUpdate(id, amount);
+    }
+
+    private long getAmountResult(long id, long amount, TransactionType transactionType) {
+        long userPoints = userPointTable.selectById(id).point();
+        return transactionType == TransactionType.CHARGE ? userPoints + amount : userPoints - amount;
     }
 }

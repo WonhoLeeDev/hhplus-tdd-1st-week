@@ -1,4 +1,4 @@
-package io.hhplus.tdd.secondWeek;
+package io.hhplus.tdd.step2;
 
 public class UserPointServiceTest {
 
