@@ -5,7 +5,7 @@ import io.hhplus.tdd.database.UserPointTable;
 import io.hhplus.tdd.point.service.PointHistoryService;
 import io.hhplus.tdd.point.service.PointService;
 import io.hhplus.tdd.point.UserPoint;
-import io.hhplus.tdd.point.service.UserPointServiceImpl;
+import io.hhplus.tdd.point.service.UserPointService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -23,7 +23,7 @@ public class PointTest {
     @BeforeEach
     void setUp() {
         pointService = new PointService(
-                new UserPointServiceImpl(new UserPointTable()),
+                new UserPointService(new UserPointTable()),
                 new PointHistoryService(new PointHistoryTable())
         );
     }

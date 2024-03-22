@@ -9,18 +9,18 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class PointService {
 
-    private final UserPointServiceImpl userPointServiceImpl;
+    private final UserPointService userPointService;
     private final PointHistoryService pointHistoryService;
 
     public UserPoint charge(UserPoint userPoint) {
-        UserPoint chargedUserPoint = userPointServiceImpl.chargeUserPoint(userPoint.id(), userPoint.point());
+        UserPoint chargedUserPoint = userPointService.chargeUserPoint(userPoint.id(), userPoint.point());
         pointHistoryService.savePointHistory(chargedUserPoint.id(), chargedUserPoint.point(), TransactionType.CHARGE, chargedUserPoint.updateMillis());
         return chargedUserPoint;
     }
 
 
     public UserPoint use(UserPoint userPoint) {
-        UserPoint usedUserPoint = userPointServiceImpl.useUserPoint(userPoint.id(), userPoint.point());
+        UserPoint usedUserPoint = userPointService.useUserPoint(userPoint.id(), userPoint.point());
         pointHistoryService.savePointHistory(usedUserPoint.id(), usedUserPoint.point(), TransactionType.USE, usedUserPoint.updateMillis());
         return usedUserPoint;
     }
