@@ -1,4 +1,4 @@
-package io.hhplus.tdd.step2;
+package io.hhplus.tdd;
 
 import io.hhplus.tdd.database.PointHistoryTable;
 import io.hhplus.tdd.point.PointHistory;

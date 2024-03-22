@@ -1,4 +1,4 @@
-package io.hhplus.tdd.step2;
+package io.hhplus.tdd;
 
 import io.hhplus.tdd.database.UserPointDB;
 import io.hhplus.tdd.database.UserPointTableStub;
