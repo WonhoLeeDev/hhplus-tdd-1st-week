@@ -10,6 +10,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
@@ -102,4 +105,31 @@ public class UserPointServiceStubTest {
                     userPointService.useUserPoint(userPointId, amount);
                 });
     }
+
+    @DisplayName("동시에 포인트 충전 시, 차례대로 포인트 충전에 성공한다.")
+    @Test
+    void chargeUserPoint_Success_whenChargeSynchronizes() throws ExecutionException, InterruptedException {
+        CompletableFuture<Void> future1 = CompletableFuture.runAsync(() -> userPointService.chargeUserPoint(1L, 10L));
+        CompletableFuture<Void> future2 = CompletableFuture.runAsync(() -> userPointService.chargeUserPoint(1L, 10L));
+        CompletableFuture<Void> future3 = CompletableFuture.runAsync(() -> userPointService.chargeUserPoint(1L, 10L));
+
+        CompletableFuture<Void> allFutres = CompletableFuture.allOf(future1, future2, future3);
+        allFutres.get();
+
+        assertThat(userPointService.getUserPointById(1L).point()).isEqualTo(30L);
+    }
+
+    @DisplayName("동시에 포인트 사용 시, 차례대로 포인트 사용에 성공한다.")
+    @Test
+    void useUserPoint_Success_whenChargeSynchronizes() throws ExecutionException, InterruptedException {
+        CompletableFuture<Void> future1 = CompletableFuture.runAsync(() -> userPointService.useUserPoint(3L, 30L));
+        CompletableFuture<Void> future2 = CompletableFuture.runAsync(() -> userPointService.useUserPoint(3L, 30L));
+        CompletableFuture<Void> future3 = CompletableFuture.runAsync(() -> userPointService.useUserPoint(3L, 30L));
+
+        CompletableFuture<Void> allFutres = CompletableFuture.allOf(future1, future2, future3);
+        allFutres.get();
+
+        assertThat(userPointService.getUserPointById(3L).point()).isEqualTo(10L);
+    }
+
 }
